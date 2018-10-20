@@ -2,17 +2,17 @@ package com.example.ashutosh.myapplication
 
 import android.os.Bundle
 import android.os.Handler
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.DividerItemDecoration.VERTICAL
-import android.support.v7.widget.LinearLayoutManager
-import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.postDelayed
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView.VERTICAL
 import com.example.ashutosh.myapplication.sdk.InterceptorHTTPClientCreator
 import com.example.ashutosh.myapplication.sdk.MySdk
 import com.example.ashutosh.myapplication.sdk.Service
 import kotlinx.android.synthetic.main.activity_main.*
-import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.Response
 
 
@@ -21,46 +21,55 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        if (InterceptorHTTPClientCreator.isHttpClientNull) {
+
+        if (InterceptorHTTPClientCreator.isHttpClientNull)
             InterceptorHTTPClientCreator.createInterceptorHTTPClient()
-        }
-        val layoutManager = LinearLayoutManager(this)
-        recyclerView.layoutManager = layoutManager
-        val decoration = DividerItemDecoration(applicationContext, VERTICAL)
-        recyclerView.addItemDecoration(decoration)
 
         val service = MySdk.Builder().build(applicationContext).getService()
 
+        with(recyclerView) {
+            layoutManager = LinearLayoutManager(this@MainActivity)
+            addItemDecoration(DividerItemDecoration(applicationContext, VERTICAL))
+        }
+
+
         //mimicking fake long running network call
         val handler = Handler()
-        handler.postDelayed({
+        handler.postDelayed(delayInMillis = 5000) {
             callFetchUser(service)
-        }, 5000)
+        }
 
 
     }
 
     private fun callFetchUser(service: Service?) {
-        progressBar.visibility = View.VISIBLE
-        service?.fetchUser("user")?.enqueue(object : Callback<List<User>> {
-            override fun onFailure(call: Call<List<User>>, t: Throwable) {
-                progressBar.visibility = View.GONE
+        progressBar.visibility = VISIBLE
 
-            }
-
-            override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
-                progressBar.visibility = View.GONE
-                if (response.isSuccessful) {
-                    val body = response.body()
-                    recyclerView.adapter = body?.let { MyCustomRecyclerViewAdapter(this@MainActivity, it) }
+        service?.fetchUser("user")?.onEnqueue(
+                onSuccess = {
+                    doOnSuccess(it)
+                },
+                onFail = {
+                    doOnFail(it)
                 }
-            }
-        })
+        )
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        InterceptorHTTPClientCreator.clearOkHttpClient()
+    private fun doOnFail(t: Throwable) {
+        progressBar.visibility = GONE
+        t.printStackTrace()
     }
+
+    private fun doOnSuccess(response: Response<List<User>>) {
+        progressBar.visibility = GONE
+        if (response.isSuccessful) {
+            val body = response.body()
+            recyclerView.adapter = body?.let {
+                MyCustomRecyclerViewAdapter(this@MainActivity, it)
+            }
+        }
+    }
+
 
 }
+

@@ -11,8 +11,6 @@ class InterceptorHTTPClientCreator {
 
         private var defaultHttpClient: OkHttpClient? = null
 
-
-
         @JvmStatic
         fun createInterceptorHTTPClient() {
 

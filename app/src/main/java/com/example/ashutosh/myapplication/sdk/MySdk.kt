@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 
 class MySdk(private val retrofit: Retrofit) {
-    private var service: Service? = null
+    private  var service: Service? = null
 
     init {
         createService()
@@ -28,10 +28,11 @@ class MySdk(private val retrofit: Retrofit) {
             val retrofit: Retrofit
             val baseUrl: String = context.resources.getString(R.string.base_url)
 
-            if (InterceptorHTTPClientCreator.okHttpClient != null) {
+            val okHttpClient = InterceptorHTTPClientCreator.okHttpClient
+            if (okHttpClient != null) {
                 retrofit = Retrofit.Builder()
                         .addConverterFactory(GsonConverterFactory.create())
-                        .client(InterceptorHTTPClientCreator.okHttpClient)
+                        .client(okHttpClient)
                         .baseUrl(baseUrl)
                         .build()
 
