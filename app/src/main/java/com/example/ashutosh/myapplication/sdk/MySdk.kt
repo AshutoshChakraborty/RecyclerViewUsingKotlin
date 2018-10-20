@@ -8,40 +8,38 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class MySdk(private val retrofit: Retrofit) {
     private var service: Service? = null
+
     init {
         createService()
     }
 
-
-
     /**
-     * Builder for [OmlSdk]
+     * Builder for [MySdk]
      */
     class Builder {
 
         /**
-         * Create the [OmlSdk] to be used.
+         * Create the [MySdk] to be used.
          *
-         * @return [OmlSdk]
+         * @return [MySdk]
          */
 
         fun build(context: Context): MySdk {
-            var retrofit: Retrofit? = null
-            var baseUrl: String? = null
-            baseUrl = context.resources.getString(R.string.base_url)
+            val retrofit: Retrofit
+            val baseUrl: String = context.resources.getString(R.string.base_url)
+
             if (InterceptorHTTPClientCreator.okHttpClient != null) {
                 retrofit = Retrofit.Builder()
                         .addConverterFactory(GsonConverterFactory.create())
                         .client(InterceptorHTTPClientCreator.okHttpClient)
-                        .baseUrl(baseUrl!!)
+                        .baseUrl(baseUrl)
                         .build()
 
                 return MySdk(retrofit)
             } else {
                 retrofit = Retrofit.Builder()
                         .addConverterFactory(GsonConverterFactory.create())
-                        //                        .client(InterceptorHTTPClientCreator.getOkHttpClient())
-                        .baseUrl(baseUrl!!)
+                        .baseUrl(baseUrl)
                         .build()
             }
             return MySdk(retrofit)

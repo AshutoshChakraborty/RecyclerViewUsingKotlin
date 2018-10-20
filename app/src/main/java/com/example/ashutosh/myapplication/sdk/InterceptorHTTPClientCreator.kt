@@ -1,16 +1,16 @@
 package com.example.ashutosh.myapplication.sdk
 
 import okhttp3.OkHttpClient
-import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
 import java.util.concurrent.TimeUnit
 
 
-class InterceptorHTTPClientCreator() {
+class InterceptorHTTPClientCreator {
 
     companion object {
 
         private var defaultHttpClient: OkHttpClient? = null
+
 
 
         @JvmStatic
