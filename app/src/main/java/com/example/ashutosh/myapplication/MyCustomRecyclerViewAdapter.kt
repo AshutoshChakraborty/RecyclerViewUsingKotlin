@@ -7,10 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.annotation.GlideModule
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.child_view.view.*
 
-class MyCustomRecyclerViewAdapter(private val context: Context, val list: ArrayList<User>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class MyCustomRecyclerViewAdapter(private val context: Context, val list: List<User>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.child_view, p0, false)
@@ -33,9 +34,9 @@ class MyCustomRecyclerViewAdapter(private val context: Context, val list: ArrayL
         with(holder) {
             name.text = user.name
             email.text = user.email
-            phone.text = user.mobile
+            phone.text = user.phone
             dob.text = user.dateOfBirth
-            Glide.with(context).load(user.profilePic).into(profileImage)
+            Glide.with(context).load(user.profilePicture).into(profileImage)
         }
 
     }
