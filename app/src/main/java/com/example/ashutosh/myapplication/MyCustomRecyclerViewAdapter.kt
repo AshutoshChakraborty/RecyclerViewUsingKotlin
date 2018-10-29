@@ -22,6 +22,14 @@ class MyCustomRecyclerViewAdapter(private val context: Context, private val list
         val phone: TextView = view.phoneNumber
         val dob: TextView = view.dateOfBirth
         val profileImage: CircleImageView = view.profileImage
+        val view = view
+
+
+        fun clickListener() {
+            view.setOnClickListener {
+
+            }
+        }
     }
 
     override fun getItemCount(): Int = list.size
